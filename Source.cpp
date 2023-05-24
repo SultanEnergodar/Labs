@@ -8,8 +8,10 @@ protected:
 	Detail() {}
 public:
 	virtual ~Detail() {}
+	virtual void print() { std::cout << "create detail" << std::endl; }
+
 	template<typename T>
-	friend T* CreatePart();
+	friend void CreatePart();
 };
 std::vector<Detail*> parts;
 class Assembly : public Detail {
@@ -17,35 +19,30 @@ protected:
 	Assembly() {}
 public:
 	virtual ~Assembly() {}
+	void print() override { std::cout << "create assembly" << std::endl; }
 
-	static Assembly* CreateAssembly() {
-		return new Assembly();
-	}
 	template<typename T>
-	friend T* CreatePart();
+	friend void CreatePart();
 };
 
 
 
 template<typename T>
-T* CreatePart() {
+void CreatePart() {
 	T* part = new T();
 	parts.push_back(part);
-	return part;
 }
 
 int main() {
-	Assembly* assembly = Assembly::CreateAssembly();
-	Detail* detail1 = CreatePart<Detail>();
-	Detail* detail2 = CreatePart<Detail>();
-	Assembly* assembly1 = CreatePart<Assembly>();
-	Assembly* assembly2 = CreatePart<Assembly>();
+	CreatePart<Detail>();
+	CreatePart<Detail>();
+	CreatePart<Assembly>();
+	CreatePart<Assembly>();
 
-	std::cout << parts.size();
 	for (auto p : parts) {
+		p->print();
 		delete p;
 	}
 	parts.clear();
-	std::cout << parts.size();
 	return 0;
 }
